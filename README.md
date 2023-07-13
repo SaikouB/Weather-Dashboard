@@ -24,8 +24,12 @@ https://openweathermap.org/
 
 ## Webpage Link (URL)
 
+https://saikoub.github.io/Weather-Dashboard/
+
 ## GitHub Repository Link (URL)
 
 https://github.com/SaikouB/Weather-Dashboard
 
 ## Webpage Screenshot
+
+<img width="1440" alt="Screen Shot 2023-07-13 at 3 14 52 PM" src="https://github.com/SaikouB/Weather-Dashboard/assets/132960605/0046bc8c-c062-425a-9127-9ba509be063b">
