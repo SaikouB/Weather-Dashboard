@@ -19,9 +19,9 @@ $(function () {
 
 	function addToSearchHistory(CT) {
 		var searchList = $("#search-list");
-		var savedSearch = $("<div>").html('<button class=" mt-1 fw-lighter border border-success text-capitalize rounded-pill d-inline-flex flex-wrap">' + CT + '</button>');
+		var savedSearch = $("<ul>").html('<button class=" mt-1 fw-lighter border border-success text-capitalize rounded-pill">' + CT + '</button>');
 		savedSearch.on("click", function () {
-			retrieveWeather(CT)
+			retrieveWeather(CT);
 		})
 		searchList.append(savedSearch);
 		console.log(savedSearch)
@@ -34,7 +34,7 @@ $(function () {
 	$(document).ready(function () {
 		for (let i = 0; i < storage.length; i++) {
 			var searchList = $("#search-list");
-			var savedSearch = $("<p>").html('<button class=" mt-1 fw-lighter border border-success text-capitalize rounded-pill d-inline-flex flex-wrap">' + storage[i] + '</button>');
+			var savedSearch = $("<ul>").html('<button class=" mt-1 fw-lighter border border-success text-capitalize rounded-pill">' + storage[i] + '</button>');
 			savedSearch.on("click", function () {
 				retrieveWeather(storage[i])
 			})
@@ -53,7 +53,7 @@ $(function () {
 					addToSearchHistory(enteredCtName)
 					return response.json();
 				} else {
-					alert("Please enter a valid city, zip code, or country");
+					alert("Please enter a valid city or country");
 				}
 			})
 			.then(function (data) {
@@ -76,20 +76,20 @@ $(function () {
 		var description = data.weather[0].description;
 
 		var locEl = $('<h3>').addClass('fs-1 p-3').html(cityName);
-		var dateEl = $('<h3>').addClass('card-body').text("Today's Date: " + date);
-		var iconEl = $("<img>").addClass('card-body')
+		var dateEl = $('<h3>').addClass('').text("Today's Date: " + date);
+		var iconEl = $("<img>").addClass('')
 		iconEl.attr("class", "weather-icon ");
 		iconEl.attr("src", "https://openweathermap.org/img/w/" + weatherIcon + ".png")
-		var tempEl = $('<p>').addClass('card-text').html("Temperature: " + temp + " &#8457;");
-		var tempFeelEl = $('<p>').addClass('card-text').html("Feels like: " + tempFeel + " &#8457;");
-		var lowTempEl = $('<p>').addClass('card-text').html("Low: " + lowTemp + " &#8457;");
-		var highTempEl = $('<p>').addClass('card-text').html("High: " + highTemp + " &#8457;")
-		var humidityEl = $('<p>').addClass('card-text').html("Humidity: " + humidity + "&#37")
-		var windSpeedEl = $('<p>').addClass('card-text').text("Wind Speed: " + windSpeed + " mph");
-		var descriptionEl = $('<p>').addClass('card-text').text("Condition: " + description);
+		var tempEl = $('<p>').addClass('').html("Temperature: " + temp + " &#8457;");
+		var tempFeelEl = $('<p>').addClass('').html("Feels like: " + tempFeel + " &#8457;");
+		var lowTempEl = $('<p>').addClass('').html("Low: " + lowTemp + " &#8457;");
+		var highTempEl = $('<p>').addClass('').html("High: " + highTemp + " &#8457;")
+		var humidityEl = $('<p>').addClass('').html("Humidity: " + humidity + "&#37")
+		var windSpeedEl = $('<p>').addClass('').text("Wind Speed: " + windSpeed + " mph");
+		var descriptionEl = $('<p>').addClass('').text("Condition: " + description);
 		var weatherDetails = $("#weatherdetails");
 		weatherDetails.empty();
-		weatherDetails.append(locEl, dateEl, iconEl, descriptionEl, tempEl, lowTempEl, highTempEl, tempFeelEl, humidityEl, windSpeedEl)
+		weatherDetails.append(locEl, dateEl, iconEl,  descriptionEl, tempEl, lowTempEl, highTempEl, tempFeelEl, humidityEl, windSpeedEl)
 	}
 	function retrieveForecast(enteredCtName) {
 		var apiUrl = BaseUrl + "forecast?q=" + enteredCtName + "&units=imperial" + "&appid=" + APIKey;
