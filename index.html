@@ -14,29 +14,31 @@
     <header class="bg-success p-3 fs-1 fw-semibold text-center text-white bg-opacity-100">
         WeatherTyme
     </header>
-    <div class="col-12 col-md-8 col-lg-9">
-        <aside class="form-container">
-            <h1 class="fs-4 fw-lighter fst-italic">Search Weather</br>by City,</br>Country:</h1>
+    <div class="row">
+        <aside class="form-container m-3">
+            <h1 class="fs-4 fw-lighter fst-italic">Search Weather</br>by City or</br>Country:</h1>
             <input id="input-bx" type="text" placeholder="Type location here">
             <button id="srch-btn"
                 class="btn btn-sm btn-outline-success mt-1 d-flex justify-content-center">Search</button>
             <button id="clear-btn"
                 class="btn btn-sm btn-outline-success mt-1 mb-4 d-flex justify-content-center">Clear</button>
-            <div class="card-header">Saved Searches
-                <div id="search-list" class="card-body"></div>
+            <div class="card-body d-inline-flex flex-wrap">
+                <div id="search-list" class="card justify-content-center">
+                    <h3 class="card-header bg-success fs-4 fw-lighter">Saved Searches</h3>
+                </div>
             </div>
         </aside>
-        <section class="">
-            <div id="weather-card" class="card d-inline-flex justify-content-start">
-                <div id="weatherdetails" class='card-header p-4 m-3 d-inline-flex flex-wrap text-capitalize'></div>
+        <div class="col-12 col-md-8 col-lg-9 p-3 m-3">
+            <div id="weather-card" class="d-inline-flex flex-row">
+                <div id="weatherdetails" class='card-header p-5 m-5 flex-wrap text-capitalize'></div>
             </div>
-            <div class="forecast-cards p-4 m-4">
-                <div id="theforecast" class="d-inline-flex flex-wrap m-2 col-12"></div>
+            <div class="forecast-cards p-3 m-3">
+                <div id="theforecast" class="d-inline-flex flex-wrap"></div>
             </div>
-        </section>
+        </div>
 
         <footer>
-            &copy Saikou Balde
+            &infin; Saikou Balde
         </footer>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
