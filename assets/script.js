@@ -1,53 +1,56 @@
-$ (function () {
+$(function () {
 	// API url
 	var BaseUrl = "https://api.openweathermap.org/data/2.5/";
 	// API key
 	var APIKey = "115f418a44cb81c0cc424fa14d5ad0a5";
-
 	// JQuery Selectors
 	var searchBtnEl = $("#srch-btn");
-	var ctInputEl = $("#input-bx");
-	var enteredCtName = $("#weatherdetails")
-
+	var clearBtnEl = $("#clear-btn")
 
 	var searchClickHandler = function (event) {
 		event.preventDefault();
-
 		var locEl = $("#input-bx").val().trim();
-
 		if (locEl) {
 			retrieveWeather(locEl);
-			retrieveStoredSearches();
-			// setSearchLocation(locEl);
 		} else {
-			alert("Please enter a location");
+			alert("Please enter city or Country");
 		}
 	};
-	
-	function retrieveStoredSearches(location) {
-		var storedSearches = location;
-		localStorage.setItem("searches", JSON.stringify(storedSearches));
-		var searches = storedSearches;
-		for (var i = 0; i < storedSearches; i++) {
-			addToSearchHistory(storedSearches[i]);
-			var storedSearches = JSON.parse(localStorage.getItem("storedSearches")) || storedSearchesSearches;
-			addToSearchHistory(locEl);
-		}
-		function addToSearchHistory(CT) {
-			var searchList = $("#saved-search");
-			var savedSearch = $("<li>").text(CT);
-			savedSearch.append(searchList);
-		}
-	}
-	
 
-	
+	function addToSearchHistory(CT) {
+		var searchList = $("#search-list");
+		var savedSearch = $("<div>").html('<button class=" mt-1 fw-lighter border border-success text-capitalize rounded-pill d-inline-flex flex-wrap">' + CT + '</button>');
+		savedSearch.on("click", function () {
+			retrieveWeather(CT)
+		})
+		searchList.append(savedSearch);
+		console.log(savedSearch)
+		var oldSearches = JSON.parse(localStorage.getItem("storedSearches")) || [];
+		oldSearches.push(CT)
+		localStorage.setItem("storedSearches", JSON.stringify(oldSearches));
+	}
+
+	var storage = JSON.parse(localStorage.getItem("storedSearches")) || [];
+	$(document).ready(function () {
+		for (let i = 0; i < storage.length; i++) {
+			var searchList = $("#search-list");
+			var savedSearch = $("<p>").html('<button class=" mt-1 fw-lighter border border-success text-capitalize rounded-pill d-inline-flex flex-wrap">' + storage[i] + '</button>');
+			savedSearch.on("click", function () {
+				retrieveWeather(storage[i])
+			})
+			searchList.append(savedSearch);
+			console.log(savedSearch)
+			var oldSearches = JSON.parse(localStorage.getItem("storedSearches")) || [];
+			oldSearches.push(storage[i])
+		}
+	})
+
 	function retrieveWeather(enteredCtName) {
 		var apiUrl = BaseUrl + "weather?q=" + enteredCtName + "&units=imperial" + "&appid=" + APIKey;
-
 		fetch(apiUrl)
 			.then(function (response) {
 				if (response.ok) {
+					addToSearchHistory(enteredCtName)
 					return response.json();
 				} else {
 					alert("Please enter a valid city, zip code, or country");
@@ -72,57 +75,31 @@ $ (function () {
 		var windSpeed = data.wind.speed;
 		var description = data.weather[0].description;
 
-		var locEl = $('<ul class="list-group fs-1">').text(cityName);
-		var dateEl = $('<li>').addClass('list-group-item list-group-item-success').text("Today's Date: " + date);
-		var iconEl = $("<i>").addClass("mb-4 wi weather-icon" + weatherIcon);
-		var tempEl = $('<li>').addClass('list-group-item list-group-item-success').html("Temperature: " + temp + " &#8457;");
-		var tempFeelEl = $('<li>').addClass('list-group-item list-group-item-success').html("Feels like: " + tempFeel + " &#8457;");
-		var lowTempEl = $('<li>').addClass('list-group-item list-group-item-success').html("Low: " + lowTemp + " &#8457;");
-		var highTempEl = $('<li>').addClass('list-group-item list-group-item-success').html("High: " + highTemp + " &#8457;")
-		var humidityEl = $('<li>').addClass('list-group-item list-group-item-success').html("Humidity: " + humidity + "&#37")
-		var windSpeedEl = $('<li>').addClass('list-group-item list-group-item-success').text("Wind Speed: " + windSpeed + " mph");
-		var descriptionEl = $('<li>').addClass('list-group-item list-group-item-success').text("Condition: " + description);
-
-
-		// If statement to add icon based on weather condition
-		if (weatherIcon === "01d" || weatherIcon === "01n") {
-			iconEl.addClass("wi-day-sunny");
-		} else if (weatherIcon === "02d" || weatherIcon === "02n") {
-			iconEl.addClass("wi-day-cloudy");
-		} else if (weatherIcon === "03d" || weatherIcon === "03n") {
-			iconEl.addClass("wi-day-cloud");
-		} else if (weatherIcon === "04d" || weatherIcon === "04n") {
-			iconEl.addClass("wi-day-cloudy");
-		} else if (weatherIcon === "09d" || weatherIcon === "09n") {
-			iconEl.addClass("wi-day-showers");
-		} else if (weatherIcon === "10d" || weatherIcon === "10n") {
-			iconEl.addClass("wi-day-rain");
-		} else if (weatherIcon === "11d" || weatherIcon === "11n") {
-			iconEl.addClass("wi-day-thunderstorm");
-		} else if (weatherIcon === "13d" || weatherIcon === "13n") {
-			iconEl.addClass("wi-day-snow");
-		} else if (weatherIcon === "50d" || weatherIcon === "50n") {
-			iconEl.addClass("wi-day-fog");
-		} else if (weatherIcon) {
-			iconEl.addClass("wi-day-cloud");
-		}
-
-		$("#weather-icon").append(iconEl)
-
+		var locEl = $('<h3>').addClass('fs-1 p-3').html(cityName);
+		var dateEl = $('<h3>').addClass('card-body').text("Today's Date: " + date);
+		var iconEl = $("<img>").addClass('card-body')
+		iconEl.attr("class", "weather-icon ");
+		iconEl.attr("src", "https://openweathermap.org/img/w/" + weatherIcon + ".png")
+		var tempEl = $('<p>').addClass('card-text').html("Temperature: " + temp + " &#8457;");
+		var tempFeelEl = $('<p>').addClass('card-text').html("Feels like: " + tempFeel + " &#8457;");
+		var lowTempEl = $('<p>').addClass('card-text').html("Low: " + lowTemp + " &#8457;");
+		var highTempEl = $('<p>').addClass('card-text').html("High: " + highTemp + " &#8457;")
+		var humidityEl = $('<p>').addClass('card-text').html("Humidity: " + humidity + "&#37")
+		var windSpeedEl = $('<p>').addClass('card-text').text("Wind Speed: " + windSpeed + " mph");
+		var descriptionEl = $('<p>').addClass('card-text').text("Condition: " + description);
 		var weatherDetails = $("#weatherdetails");
 		weatherDetails.empty();
-
-		weatherDetails.append(locEl, iconEl, dateEl, descriptionEl, tempEl, lowTempEl, highTempEl, tempFeelEl, humidityEl, windSpeedEl)
+		weatherDetails.append(locEl, dateEl, iconEl, descriptionEl, tempEl, lowTempEl, highTempEl, tempFeelEl, humidityEl, windSpeedEl)
 	}
 	function retrieveForecast(enteredCtName) {
 		var apiUrl = BaseUrl + "forecast?q=" + enteredCtName + "&units=imperial" + "&appid=" + APIKey;
-
 		fetch(apiUrl)
 			.then(function (response) {
 				if (response.ok) {
 					return response.json();
 				} else {
-					throw new Error("Forecast currently unavailable");
+					alert("Please enter a valid city or country");
+					return;
 				}
 			}).then(function (data) {
 				displayForecast(data);
@@ -133,7 +110,6 @@ $ (function () {
 	function displayForecast(data) {
 		var theForecast = $("#theforecast");
 		theForecast.empty();
-
 		for (var i = 0; i < data.list.length; i += 8) {
 			var forecast = data.list[i];
 			var forecastDate = new Date(forecast.dt * 1000).toLocaleDateString();
@@ -145,47 +121,27 @@ $ (function () {
 			var forecastTempFeel = forecast.main.feels_like;
 			var forecastWindSpeed = forecast.wind.speed;
 			var forecastDescription = forecast.weather[0].description;
-
-			var forecastArea = $('<ul>').addClass("list group forecast-area row justify-content-center p-3");
-			var forecastDateEl = $('<li>').addClass('list-group-item list-group-item-success').text(forecastDate);
-			var forecastIconEl = $("<i>").addClass("mb-4 wi weather-icon" +forecastIcon);
-			var forecastTempEl = $('<li>').addClass('list-group-item list-group-item-success').html("Temperature: " + forecastTemp + " &#8457 ");
-			var forecastLowTempEl = $('<li>').addClass('list-group-item list-group-item-success').html("Low: " + forecastLowTemp + " &#8457 ");
-			var forecastHighTempEl = $('<li>').addClass('list-group-item list-group-item-success').html("High: " + forecastHighTemp + " &#8457 ");
-			var forecastHumidityEl = $('<li>').addClass('list-group-item list-group-item-success').html("Humidity: " + forecastHumidity + "&#37 ");
-			var forecastTempFeelEl = $('<li>').addClass('list-group-item list-group-item-success').html("Feels like: " + forecastTempFeel + " &#8457 ");
-			var forecastWindSpeedEl = $('<li>').addClass('list-group-item list-group-item-success').text("Wind Speed: " + forecastWindSpeed + " mph");
-			var forecastDescriptionEl = $('<li>').addClass('list-group-item list-group-item-success').text("Condition: " + forecastDescription);
-
-			if (forecastIcon === "01d" || forecastIcon === "01n") {
-				forecastIconEl.addClass("wi-day-sunny");
-			} else if (forecastIcon === "02d" || forecastIcon === "02n") {
-				forecastIconEl.addClass("wi-day-cloudy");
-			} else if (forecastIcon === "03d" || forecastIcon === "03n") {
-				forecastIconEl.addClass("wi-day-cloud");
-			} else if (forecastIcon === "04d" || forecastIcon === "04n") {
-				forecastIconEl.addClass("wi-day-cloudy");
-			} else if (forecastIcon === "09d" || forecastIcon === "09n") {
-				forecastIconEl.addClass("wi-day-showers");
-			} else if (forecastIcon === "10d" || forecastIcon === "10n") {
-				forecastIconEl.addClass("wi-day-rain");
-			} else if (forecastIcon === "11d" || forecastIcon === "11n") {
-				forecastIconEl.addClass("wi-day-thunderstorm");
-			} else if (forecastIcon === "13d" || forecastIcon === "13n") {
-				forecastIconEl.addClass("wi-day-snow");
-			} else if (forecastIcon === "50d" || forecastIcon === "50n") {
-				forecastIconEl.addClass("wi-day-fog");
-			} else {
-				forecastIconEl.addClass("wi-day-cloud");
-			}
-
-			$("#theforecast").append(forecastArea);
-
-			forecastArea.append(forecastIconEl, forecastDateEl, forecastDescriptionEl, forecastTempEl, forecastLowTempEl, forecastHighTempEl, forecastTempFeelEl, forecastHumidityEl, forecastWindSpeedEl);
+			var forecastArea = $('<div>').addClass('forecast-area bg-secondary m-3 p-3');
+			
+			var forecastDateEl = $('<h4>').addClass('card-text').text(forecastDate);
+			var forecastIconEl = $("<img>")
+			forecastIconEl.attr("class", "weather-icon");
+			forecastIconEl.attr("src", "https://openweathermap.org/img/w/" + forecastIcon + ".png")
+			var forecastTempEl = $('<p>').addClass('card-text').html("Temperature: " + forecastTemp + " &#8457 ");
+			var forecastLowTempEl = $('<p>').addClass('card-text').html("Low: " + forecastLowTemp + " &#8457 ");
+			var forecastHighTempEl = $('<p>').addClass('card-text').html("High: " + forecastHighTemp + " &#8457 ");
+			var forecastHumidityEl = $('<p>').addClass('card-text').html("Humidity: " + forecastHumidity + "&#37 ");
+			var forecastTempFeelEl = $('<p>').addClass('card-text').html("Feels like: " + forecastTempFeel + " &#8457 ");
+			var forecastWindSpeedEl = $('<p>').addClass('card-text').text("Wind Speed: " + forecastWindSpeed + " mph");
+			var forecastDescriptionEl = $('<p>').addClass('card-text').text("Condition: " + forecastDescription);
+			
+			forecastArea.append(forecastDateEl, forecastIconEl,  forecastDescriptionEl, forecastTempEl, forecastLowTempEl, forecastHighTempEl, forecastTempFeelEl, forecastHumidityEl, forecastWindSpeedEl);
 			theForecast.append(forecastArea);
-
 		}
 	}
-	
 	searchBtnEl.click(searchClickHandler);
+	clearBtnEl.click(function () {
+		localStorage.clear()
+		location.reload()
+	})
 });
